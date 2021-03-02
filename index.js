@@ -24,7 +24,11 @@ function showSuccess(input) {
 //function to check if email is valid
 function isValidEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
+    if (re.test(email.value.trim())) {
+        showSuccess(email)
+    } else {
+        showError(email, `Please enter a valid Email`)
+    }
 }
 
 //function to check the length it will take in a username,minimum length, and maximum length
@@ -32,11 +36,12 @@ function checkLength(input, minLength, maxLength) {
     let userInput = input.value
     let length = userInput.length
     if (length < minLength) {
-        console.log('not enough chars')
+        showError(input, `${getFieldName(input)} must be at least ${minLength} letters`)
     } else if (length > maxLength) {
-        console.log('too many chars')
+        showError(input, `${getFieldName(input)} can only enter ${maxLength} letters`)
+    } else {
+        showSuccess(input)
     }
-    console.log('input: ', length)
 }
 
 //check required fields
@@ -65,10 +70,26 @@ function getFieldName(input) {
     // let capitalizedWord = fieldSplit.join('')
 }
 
+//check to make sure the passwords we're getting match
+function checkPasswordsMatch(input1, input2) {
+    let password01 = input1.value
+    let password02 = input2.value
+    if (password01 !== password02) {
+        showError([password2], `Passwords do not match`)
+    } else {
+        showSuccess(password2)
+    }
+}
+
 //Event Listeners
 form.addEventListener('submit', function (e) {
     e.preventDefault()
     checkRequired([username, email, password, password2])
+    checkPasswordsMatch(password, password2)
+    checkLength(username, 3, 15)
+    checkLength(password, 6, 15)
+    checkLength(password2, 6, 15)
+    isValidEmail(email)
 })
 
 
